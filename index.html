@@ -13,8 +13,8 @@
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2563eb">
 <link rel="apple-touch-icon" href="icon.png">
+<meta name="theme-color" content="#2563eb">
 
 <style>
 :root {
@@ -24,7 +24,6 @@
   --muted: #64748b;
   --primary: #2563eb;
 }
-
 [data-theme="dark"] {
   --bg: #020617;
   --card: #020617;
@@ -32,7 +31,6 @@
   --muted: #94a3b8;
   --primary: #38bdf8;
 }
-
 body {
   margin: 0;
   min-height: 100vh;
@@ -43,7 +41,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
 .card {
   width: 360px;
   background: var(--card);
@@ -51,18 +48,15 @@ body {
   border-radius: 14px;
   box-shadow: 0 20px 40px rgba(0,0,0,.15);
 }
-
 h1 {
   font-size: 1.2rem;
   text-align: center;
   margin-bottom: 1.2rem;
 }
-
 label {
   font-size: .85rem;
   color: var(--muted);
 }
-
 input {
   width: 100%;
   padding: .6rem;
@@ -71,13 +65,11 @@ input {
   border-radius: 8px;
   border: 1px solid #cbd5f5;
 }
-
 .row {
   display: flex;
   gap: .5rem;
   margin-bottom: 1rem;
 }
-
 button {
   flex: 1;
   padding: .6rem;
@@ -86,27 +78,23 @@ button {
   background: transparent;
   cursor: pointer;
 }
-
 .top-actions {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
   font-size: .8rem;
 }
-
 .result {
   background: var(--bg);
   padding: 1rem;
   border-radius: 10px;
   text-align: center;
 }
-
 .ratio {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--primary);
 }
-
 .tag {
   margin-top: .3rem;
   display: inline-block;
@@ -116,12 +104,10 @@ button {
   background: #e0e7ff;
   color: #1e3a8a;
 }
-
 [data-theme="dark"] .tag {
   background: #0f172a;
   color: #7dd3fc;
 }
-
 .hint {
   font-size: .75rem;
   color: var(--muted);
@@ -134,7 +120,7 @@ button {
 <div class="card">
   <div class="top-actions">
     <button id="lang">EN</button>
-    <button id="theme">🌙/☀️</button>
+    <button id="theme">☀️ 🌙</button>
   </div>
 
   <h1 id="title">Pixel 比例計算器</h1>
@@ -162,10 +148,6 @@ const i18n = {
   en: { title: 'Pixel Ratio Calculator', w: 'Width (px)', h: 'Height (px)', swap: 'Swap', copy: 'Copy', hint: 'Enter values' }
 };
 
-let lang = localStorage.lang || 'zh';
-let currentTheme = localStorage.theme || 'light';
-document.documentElement.dataset.theme = currentTheme;
-
 /* ---------- DOM ---------- */
 const wInput = document.getElementById('w');
 const hInput = document.getElementById('h');
@@ -175,35 +157,52 @@ const copyBtn = document.getElementById('copy');
 const langBtn = document.getElementById('lang');
 const themeBtn = document.getElementById('theme');
 
+/* ---------- State ---------- */
+let lang = localStorage.lang || 'zh';
+let currentTheme = localStorage.theme || 'light';
+document.documentElement.dataset.theme = currentTheme;
+
+/* ---------- Ratios ---------- */
+const ratios = [
+  {n:'16:9', v:16/9},
+  {n:'4:3', v:4/3},
+  {n:'21:9', v:21/9},
+  {n:'1:1', v:1}
+];
+
 /* ---------- Functions ---------- */
-function setLang() {
+function gcd(a,b){return b?gcd(b,a%b):a;}
+
+function setLang(){
   const t = i18n[lang];
   document.getElementById('title').textContent = t.title;
   document.getElementById('wLabel').textContent = t.w;
   document.getElementById('hLabel').textContent = t.h;
   swapBtn.textContent = t.swap;
   copyBtn.textContent = t.copy;
-  if (!wInput.value || !hInput.value) output.textContent = t.hint;
+  if(!wInput.value || !hInput.value) output.textContent = t.hint;
 }
-
-function gcd(a,b){return b?gcd(b,a%b):a;}
-
-const ratios = [{n:'16:9',v:16/9},{n:'4:3',v:4/3},{n:'21:9',v:21/9},{n:'1:1',v:1}];
 
 function update() {
   const W = +wInput.value, H = +hInput.value;
-  if (!W || !H) return;
-  localStorage.w = W; localStorage.h = H;
+  if(!W || !H){
+    output.textContent = i18n[lang].hint;
+    return;
+  }
+
+  // 保存上次輸入
+  localStorage.w = W;
+  localStorage.h = H;
 
   const d = gcd(W,H);
-  const r = W/H;
-  const close = ratios.find(x=>Math.abs(x.v-r)<0.02);
+  const ratioDecimal = (W/H).toFixed(3);
+  const commonRatio = ratios.find(x => Math.abs(x.v - W/H) < 0.02);
 
   output.innerHTML = `
     ${W} × ${H}
     <div class="ratio">${W/d}:${H/d}</div>
-    ${close?`<div class="tag">${close.n}</div>`:''}
-    <div class="hint">${r.toFixed(3)}</div>
+    ${commonRatio ? `<div class="tag">${commonRatio.n}</div>` : ''}
+    <div class="hint">小數比例: ${ratioDecimal}:1</div>
   `;
 }
 
