@@ -1,203 +1,194 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixel Ratio Calculator｜像素比例計算器</title>
+<meta charset="UTF-8" />
+<title>Pixel Ratio Calculator｜像素比例計算器</title>
+<meta name="description" content="Pixel Ratio Calculator – 輸入像素寬高，即時計算比例、常見畫面比例（16:9、4:3、21:9）。支援深色模式、PWA、離線使用。" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="Pixel Ratio Calculator – 輸入像素寬高，即時計算比例、常見畫面比例（16:9、4:3、21:9）。支援深色模式、PWA、離線使用。" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Open Graph -->
+<meta property="og:title" content="Pixel Ratio Calculator">
+<meta property="og:description" content="Instant pixel ratio calculator for designers & developers.">
+<meta property="og:type" content="website">
 
-  <!-- SEO / Social -->
-  <meta property="og:title" content="Pixel Ratio Calculator">
-  <meta property="og:description" content="Instant pixel ratio calculator for designers & developers.">
-  <meta property="og:type" content="website">
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563eb">
+<link rel="apple-touch-icon" href="icon.png">
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2563eb">
-  <link rel="apple-touch-icon" href="icon.png">
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #2563eb;
+}
 
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-    }
+[data-theme="dark"] {
+  --bg: #020617;
+  --card: #020617;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+  --primary: #38bdf8;
+}
 
-    [data-theme="dark"] {
-      --bg: #020617;
-      --card: #020617;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --primary: #38bdf8;
-    }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+.card {
+  width: 360px;
+  background: var(--card);
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.15);
+}
 
-    .card {
-      width: 360px;
-      background: var(--card);
-      padding: 2rem;
-      border-radius: 14px;
-      box-shadow: 0 20px 40px rgba(0,0,0,.15);
-    }
+h1 {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
 
-    h1 {
-      font-size: 1.2rem;
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
+label {
+  font-size: .85rem;
+  color: var(--muted);
+}
 
-    label {
-      font-size: .85rem;
-      color: var(--muted);
-    }
+input {
+  width: 100%;
+  padding: .6rem;
+  margin: .4rem 0 1rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+}
 
-    input {
-      width: 100%;
-      padding: .6rem;
-      margin: .4rem 0 1rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #cbd5f5;
-    }
+.row {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: 1rem;
+}
 
-    .row {
-      display: flex;
-      gap: .5rem;
-      margin-bottom: 1rem;
-    }
+button {
+  flex: 1;
+  padding: .6rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5f5;
+  background: transparent;
+  cursor: pointer;
+}
 
-    button {
-      flex: 1;
-      padding: .6rem;
-      border-radius: 8px;
-      border: 1px solid #cbd5f5;
-      background: transparent;
-      cursor: pointer;
-    }
+.top-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-size: .8rem;
+}
 
-    .top-actions {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      font-size: .8rem;
-    }
+.result {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+}
 
-    .result {
-      background: var(--bg);
-      padding: 1rem;
-      border-radius: 10px;
-      text-align: center;
-    }
+.ratio {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary);
+}
 
-    .ratio {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
+.tag {
+  margin-top: .3rem;
+  display: inline-block;
+  font-size: .75rem;
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #1e3a8a;
+}
 
-    .tag {
-      margin-top: .3rem;
-      display: inline-block;
-      font-size: .75rem;
-      padding: .25rem .6rem;
-      border-radius: 999px;
-      background: #e0e7ff;
-      color: #1e3a8a;
-    }
+[data-theme="dark"] .tag {
+  background: #0f172a;
+  color: #7dd3fc;
+}
 
-    [data-theme="dark"] .tag {
-      background: #0f172a;
-      color: #7dd3fc;
-    }
-
-    .hint {
-      font-size: .75rem;
-      color: var(--muted);
-      margin-top: .4rem;
-    }
-  </style>
+.hint {
+  font-size: .75rem;
+  color: var(--muted);
+  margin-top: .4rem;
+}
+</style>
 </head>
 
 <body>
-  <div class="card">
-    <div class="top-actions">
-      <button id="lang">EN</button>
-      <button id="theme">🌙</button>
-    </div>
-
-    <h1 id="title">Pixel 比例計算器</h1>
-
-    <label id="wLabel">寬度（px）</label>
-    <input id="w" type="number">
-
-    <label id="hLabel">高度（px）</label>
-    <input id="h" type="number">
-
-    <div class="row">
-      <button id="swap">交換</button>
-      <button id="copy">複製</button>
-    </div>
-
-    <div class="result" id="output">
-      請輸入尺寸
-    </div>
+<div class="card">
+  <div class="top-actions">
+    <button id="lang">EN</button>
+    <button id="theme">🌙/☀️</button>
   </div>
+
+  <h1 id="title">Pixel 比例計算器</h1>
+
+  <label id="wLabel">寬度（px）</label>
+  <input id="w" type="number">
+
+  <label id="hLabel">高度（px）</label>
+  <input id="h" type="number">
+
+  <div class="row">
+    <button id="swap">交換</button>
+    <button id="copy">複製</button>
+  </div>
+
+  <div class="result" id="output">
+    請輸入尺寸
+  </div>
+</div>
 
 <script>
 /* ---------- i18n ---------- */
 const i18n = {
-  zh: {
-    title: 'Pixel 比例計算器',
-    w: '寬度（px）',
-    h: '高度（px）',
-    swap: '交換',
-    copy: '複製',
-    hint: '請輸入尺寸'
-  },
-  en: {
-    title: 'Pixel Ratio Calculator',
-    w: 'Width (px)',
-    h: 'Height (px)',
-    swap: 'Swap',
-    copy: 'Copy',
-    hint: 'Enter values'
-  }
+  zh: { title: 'Pixel 比例計算器', w: '寬度（px）', h: '高度（px）', swap: '交換', copy: '複製', hint: '請輸入尺寸' },
+  en: { title: 'Pixel Ratio Calculator', w: 'Width (px)', h: 'Height (px)', swap: 'Swap', copy: 'Copy', hint: 'Enter values' }
 };
 
 let lang = localStorage.lang || 'zh';
-let theme = localStorage.theme || 'light';
+let currentTheme = localStorage.theme || 'light';
+document.documentElement.dataset.theme = currentTheme;
 
-document.documentElement.dataset.theme = theme;
+/* ---------- DOM ---------- */
+const wInput = document.getElementById('w');
+const hInput = document.getElementById('h');
+const output = document.getElementById('output');
+const swapBtn = document.getElementById('swap');
+const copyBtn = document.getElementById('copy');
+const langBtn = document.getElementById('lang');
+const themeBtn = document.getElementById('theme');
 
+/* ---------- Functions ---------- */
 function setLang() {
   const t = i18n[lang];
-  title.textContent = t.title;
-  wLabel.textContent = t.w;
-  hLabel.textContent = t.h;
-  swap.textContent = t.swap;
-  copy.textContent = t.copy;
-  output.textContent = t.hint;
-  langBtn.textContent = lang === 'zh' ? 'EN' : '中';
+  document.getElementById('title').textContent = t.title;
+  document.getElementById('wLabel').textContent = t.w;
+  document.getElementById('hLabel').textContent = t.h;
+  swapBtn.textContent = t.swap;
+  copyBtn.textContent = t.copy;
+  if (!wInput.value || !hInput.value) output.textContent = t.hint;
 }
 
-/* ---------- Logic ---------- */
-const wInput = w, hInput = h, output = document.getElementById('output');
-const ratios = [{n:'16:9',v:16/9},{n:'4:3',v:4/3},{n:'21:9',v:21/9},{n:'1:1',v:1}];
-
 function gcd(a,b){return b?gcd(b,a%b):a;}
+
+const ratios = [{n:'16:9',v:16/9},{n:'4:3',v:4/3},{n:'21:9',v:21/9},{n:'1:1',v:1}];
 
 function update() {
   const W = +wInput.value, H = +hInput.value;
@@ -216,30 +207,29 @@ function update() {
   `;
 }
 
-/* ---------- Events ---------- */
+/* ---------- Event Listeners ---------- */
 wInput.oninput = hInput.oninput = update;
 
-swap.onclick = () => {
+swapBtn.onclick = () => {
   [wInput.value, hInput.value] = [hInput.value, wInput.value];
   update();
 };
 
-copy.onclick = () => {
+copyBtn.onclick = () => {
   const d = gcd(wInput.value, hInput.value);
   navigator.clipboard.writeText(`${wInput.value/d}:${hInput.value/d}`);
 };
 
-const langBtn = document.getElementById('lang');
 langBtn.onclick = () => {
-  lang = lang === 'zh' ? 'en' : 'zh';
+  lang = lang==='zh'?'en':'zh';
   localStorage.lang = lang;
   setLang();
 };
 
-theme.onclick = () => {
-  theme = theme === 'light' ? 'dark' : 'light';
-  localStorage.theme = theme;
-  document.documentElement.dataset.theme = theme;
+themeBtn.onclick = () => {
+  currentTheme = currentTheme==='light'?'dark':'light';
+  localStorage.theme = currentTheme;
+  document.documentElement.dataset.theme = currentTheme;
 };
 
 /* ---------- Restore ---------- */
@@ -249,7 +239,7 @@ setLang();
 update();
 
 /* ---------- PWA ---------- */
-if ('serviceWorker' in navigator) {
+if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js');
 }
 </script>
